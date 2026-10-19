@@ -35,7 +35,6 @@ categories = [
 ]
 
 [dependencies]
-clap = { version = "4.6.7", features = ["cargo"] }
-dialoguer = { version = "0.12.0", features = ["fuzzy-select"]}
+iced = "0.14.0"
 rfluids = "0.6.0"
 strum = { version = "0.28.0", features = ["derive"] }

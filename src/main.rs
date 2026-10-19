@@ -1,3 +1,7 @@
-fn main() {
-    println!("thermocalc 0.0.1");
+use thermocalc::ui::Ui;
+
+pub fn main() -> iced::Result {
+    iced::application(|| Ui::default(), Ui::update, Ui::view)
+        .title("Thermocalc")
+        .run()
 }

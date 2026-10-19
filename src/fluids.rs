@@ -2,7 +2,7 @@ use rfluids::prelude::*;
 use strum::EnumIter;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, EnumIter, PartialEq)]
+#[derive(Debug, Clone, Copy, EnumIter, PartialEq)]
 pub enum AvailableFluids {
     OneButene,
     Acetone,
@@ -140,6 +140,12 @@ pub enum AvailableFluids {
     oXylene,
     pXylene,
     trans2Butene,
+}
+
+impl std::fmt::Display for AvailableFluids {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.get_name())
+    }
 }
 
 impl AvailableFluids {
