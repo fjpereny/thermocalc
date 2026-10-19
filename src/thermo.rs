@@ -1,4 +1,8 @@
-use rfluids::{fluid::OutputResult, prelude::*};
+#![allow(dead_code)]
+use rfluids::{
+    fluid::{FluidOutputError, OutputResult},
+    prelude::*,
+};
 
 #[derive(Debug)]
 pub struct ThermoState {
@@ -43,6 +47,7 @@ pub struct ThermoState {
     prandtl_number: OutputResult<f64>,
     pressure: OutputResult<f64>,
     quality: OutputResult<f64>,
+    ratio_of_specific_heats: OutputResult<f64>,
     residual_molar_enthalpy: OutputResult<f64>,
     residual_molar_entropy: OutputResult<f64>,
     residual_molar_gibbs_energy: OutputResult<f64>,
@@ -100,6 +105,10 @@ pub fn fluid_state(fluid: &mut Fluid) -> ThermoState {
         prandtl_number: fluid.prandtl(),
         pressure: fluid.pressure(),
         quality: fluid.quality(),
+        ratio_of_specific_heats: ratio_specific_heats(
+            fluid.specific_heat(),
+            fluid.specific_heat_const_volume(),
+        ),
         residual_molar_enthalpy: fluid.residual_molar_enthalpy(),
         residual_molar_entropy: fluid.residual_molar_entropy(),
         residual_molar_gibbs_energy: fluid.residual_molar_gibbs_energy(),
@@ -113,4 +122,13 @@ pub fn fluid_state(fluid: &mut Fluid) -> ThermoState {
         triple_point_pressure: fluid.triple_pressure(),
         triple_point_temperature: fluid.triple_temperature(),
     }
+}
+
+fn ratio_specific_heats(
+    cp: OutputResult<f64>,
+    cv: OutputResult<f64>,
+) -> Result<f64, FluidOutputError> {
+    let cp = cp?;
+    let cv = cv?;
+    Ok(cp / cv)
 }
