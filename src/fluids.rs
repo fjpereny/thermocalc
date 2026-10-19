@@ -2,7 +2,7 @@ use rfluids::prelude::*;
 use strum::EnumIter;
 
 #[allow(non_camel_case_types)]
-#[derive(Debug, EnumIter)]
+#[derive(Debug, EnumIter, PartialEq)]
 pub enum AvailableFluids {
     OneButene,
     Acetone,
@@ -24,6 +24,7 @@ pub enum AvailableFluids {
     Dichloroethane,
     DiethylEther,
     DimethylCarbonate,
+    DimethylEther,
     Ethane,
     Ethanol,
     EthylBenzene,
@@ -44,6 +45,7 @@ pub enum AvailableFluids {
     MD2M,
     MD3M,
     MD4M,
+    MDM,
     MM,
     Methane,
     Methanol,
@@ -163,6 +165,7 @@ impl AvailableFluids {
             AvailableFluids::Dichloroethane => Pure::Dichloroethane,
             AvailableFluids::DiethylEther => Pure::DiethylEther,
             AvailableFluids::DimethylCarbonate => Pure::DimethylCarbonate,
+            AvailableFluids::DimethylEther => Pure::DimethylEther,
             AvailableFluids::Ethane => Pure::Ethane,
             AvailableFluids::Ethanol => Pure::Ethanol,
             AvailableFluids::EthylBenzene => Pure::Ethylbenzene,
@@ -183,6 +186,7 @@ impl AvailableFluids {
             AvailableFluids::MD2M => Pure::MD2M,
             AvailableFluids::MD3M => Pure::MD3M,
             AvailableFluids::MD4M => Pure::MD4M,
+            AvailableFluids::MDM => Pure::MDM,
             AvailableFluids::MM => Pure::MM,
             AvailableFluids::Methane => Pure::Methane,
             AvailableFluids::Methanol => Pure::Methanol,
@@ -281,7 +285,145 @@ impl AvailableFluids {
     }
 
     pub fn name_to_fluid(name: impl AsRef<str>) -> Result<AvailableFluids, &'static str> {
-        match name {
+        match name.as_ref() {
+            // Complete CoolProp pure/pseudo-pure fluid name → AvailableFluids mapping (137 fluids)
+            "1-Butene" => Ok(AvailableFluids::OneButene),
+            "Acetone" => Ok(AvailableFluids::Acetone),
+            "Air" => Ok(AvailableFluids::Air),
+            "Ammonia" => Ok(AvailableFluids::Ammonia),
+            "Argon" => Ok(AvailableFluids::Argon),
+            "Benzene" => Ok(AvailableFluids::Benzene),
+            "CarbonDioxide" => Ok(AvailableFluids::CarbonDioxide),
+            "CarbonMonoxide" => Ok(AvailableFluids::CarbonMonoxide),
+            "CarbonylSulfide" => Ok(AvailableFluids::CarbonylSulfide),
+            "Chlorine" => Ok(AvailableFluids::Chlorine),
+            "cis-2-Butene" => Ok(AvailableFluids::cis2Butene),
+            "Cyclohexane" => Ok(AvailableFluids::Cyclohexane),
+            "Cyclopropane" => Ok(AvailableFluids::Cyclopropane),
+            "Cyclopentane" => Ok(AvailableFluids::Cyclopentane),
+            "D4" => Ok(AvailableFluids::D4),
+            "D5" => Ok(AvailableFluids::D5),
+            "D6" => Ok(AvailableFluids::D6),
+            "Deuterium" => Ok(AvailableFluids::Deuterium),
+            "Dichloroethane" => Ok(AvailableFluids::Dichloroethane),
+            "DiethylEther" => Ok(AvailableFluids::DiethylEther),
+            "DimethylCarbonate" => Ok(AvailableFluids::DimethylCarbonate),
+            "DimethylEther" => Ok(AvailableFluids::DimethylEther),
+            "Ethane" => Ok(AvailableFluids::Ethane),
+            "Ethanol" => Ok(AvailableFluids::Ethanol),
+            "EthylBenzene" => Ok(AvailableFluids::EthylBenzene),
+            "Ethylene" => Ok(AvailableFluids::Ethylene),
+            "EthyleneOxide" => Ok(AvailableFluids::EthyleneOxide),
+            "Fluorine" => Ok(AvailableFluids::Fluorine),
+            "HFE143m" => Ok(AvailableFluids::HFE143m),
+            "HeavyWater" => Ok(AvailableFluids::HeavyWater),
+            "Helium" => Ok(AvailableFluids::Helium),
+            "Hydrogen" => Ok(AvailableFluids::Hydrogen),
+            "HydrogenChloride" => Ok(AvailableFluids::HydrogenChloride),
+            "HydrogenSulfide" => Ok(AvailableFluids::HydrogenSulfide),
+            "Isobutane" => Ok(AvailableFluids::IsoButane),
+            "Isobutene" => Ok(AvailableFluids::IsoButene),
+            "Isohexane" => Ok(AvailableFluids::Isohexane),
+            "Isopentane" => Ok(AvailableFluids::Isopentane),
+            "Krypton" => Ok(AvailableFluids::Krypton),
+            "m-Xylene" => Ok(AvailableFluids::mXylene),
+            "MD2M" => Ok(AvailableFluids::MD2M),
+            "MD3M" => Ok(AvailableFluids::MD3M),
+            "MD4M" => Ok(AvailableFluids::MD4M),
+            "MDM" => Ok(AvailableFluids::MDM),
+            "MM" => Ok(AvailableFluids::MM),
+            "Methane" => Ok(AvailableFluids::Methane),
+            "Methanol" => Ok(AvailableFluids::Methanol),
+            "MethylLinoleate" => Ok(AvailableFluids::MethylLinoleate),
+            "MethylLinolenate" => Ok(AvailableFluids::MethylLinolenate),
+            "MethylOleate" => Ok(AvailableFluids::MethylOleate),
+            "MethylPalmitate" => Ok(AvailableFluids::MethylPalmitate),
+            "MethylStearate" => Ok(AvailableFluids::MethylStearate),
+            "n-Butane" => Ok(AvailableFluids::nButane),
+            "n-Decane" => Ok(AvailableFluids::nDecane),
+            "n-Dodecane" => Ok(AvailableFluids::nDodecane),
+            "n-Heptane" => Ok(AvailableFluids::nHeptane),
+            "n-Hexane" => Ok(AvailableFluids::nHexane),
+            "n-Nonane" => Ok(AvailableFluids::nNonane),
+            "n-Octane" => Ok(AvailableFluids::nOctane),
+            "n-Pentane" => Ok(AvailableFluids::nPentane),
+            "n-Perfluorobutane" => Ok(AvailableFluids::nPerfluorobutane),
+            "n-Perfluorohexane" => Ok(AvailableFluids::nPerfluorohexane),
+            "n-Perfluoropentane" => Ok(AvailableFluids::nPerfluoropentane),
+            "n-Propane" => Ok(AvailableFluids::nPropane),
+            "n-Undecane" => Ok(AvailableFluids::nUndecane),
+            "Neon" => Ok(AvailableFluids::Neon),
+            "Neopentane" => Ok(AvailableFluids::Neopentane),
+            "Nitrogen" => Ok(AvailableFluids::Nitrogen),
+            "NitrousOxide" => Ok(AvailableFluids::NitrousOxide),
+            "Novec649" => Ok(AvailableFluids::Novec649),
+            "o-Xylene" => Ok(AvailableFluids::oXylene),
+            "OrthoDeuterium" => Ok(AvailableFluids::OrthoDeuterium),
+            "OrthoHydrogen" => Ok(AvailableFluids::OrthoHydrogen),
+            "Oxygen" => Ok(AvailableFluids::Oxygen),
+            "p-Xylene" => Ok(AvailableFluids::pXylene),
+            "ParaDeuterium" => Ok(AvailableFluids::ParaDeuterium),
+            "ParaHydrogen" => Ok(AvailableFluids::ParaHydrogen),
+            "Propylene" => Ok(AvailableFluids::Propylene),
+            "PropyleneGlycol" => Ok(AvailableFluids::PropyleneGlycol),
+            "Propyne" => Ok(AvailableFluids::Propyne),
+            "R11" => Ok(AvailableFluids::R11),
+            "R1123" => Ok(AvailableFluids::R1123),
+            "R113" => Ok(AvailableFluids::R113),
+            "R1130(E)" => Ok(AvailableFluids::R1130E),
+            "R1132(E)" => Ok(AvailableFluids::R1132E),
+            "R1132a" => Ok(AvailableFluids::R1132E),
+            "R114" => Ok(AvailableFluids::R114),
+            "R115" => Ok(AvailableFluids::R115),
+            "R116" => Ok(AvailableFluids::R116),
+            "R12" => Ok(AvailableFluids::R12),
+            "R1224YDZ" => Ok(AvailableFluids::R1224YDZ),
+            "R123" => Ok(AvailableFluids::R123),
+            "R1233zd(E)" => Ok(AvailableFluids::R1233zdE),
+            "R1234yf" => Ok(AvailableFluids::R1234yf),
+            "R1234ze(E)" => Ok(AvailableFluids::R1234zeE),
+            "R1234ze(Z)" => Ok(AvailableFluids::R1234zeZ),
+            "R124" => Ok(AvailableFluids::R124),
+            "R1243zf" => Ok(AvailableFluids::R1243zf),
+            "R125" => Ok(AvailableFluids::R125),
+            "R13" => Ok(AvailableFluids::R13),
+            "R1336mzz(E)" => Ok(AvailableFluids::R1336mzzE),
+            "R1336mzz(Z)" => Ok(AvailableFluids::R1336mzzZ),
+            "R134a" => Ok(AvailableFluids::R134a),
+            "R13I1" => Ok(AvailableFluids::R13I1),
+            "R14" => Ok(AvailableFluids::R14),
+            "R141b" => Ok(AvailableFluids::R141b),
+            "R142b" => Ok(AvailableFluids::R142b),
+            "R143a" => Ok(AvailableFluids::R143a),
+            "R152a" => Ok(AvailableFluids::R152a),
+            "R161" => Ok(AvailableFluids::R161),
+            "R21" => Ok(AvailableFluids::R21),
+            "R218" => Ok(AvailableFluids::R218),
+            "R22" => Ok(AvailableFluids::R22),
+            "R227ea" => Ok(AvailableFluids::R227ea),
+            "R23" => Ok(AvailableFluids::R23),
+            "R236ea" => Ok(AvailableFluids::R236ea),
+            "R236fa" => Ok(AvailableFluids::R236fa),
+            "R245ca" => Ok(AvailableFluids::R245ca),
+            "R245fa" => Ok(AvailableFluids::R245fa),
+            "R32" => Ok(AvailableFluids::R32),
+            "R365mfc" => Ok(AvailableFluids::R365mfc),
+            "R40" => Ok(AvailableFluids::R40),
+            "R404A" => Ok(AvailableFluids::R404A),
+            "R407C" => Ok(AvailableFluids::R407C),
+            "R41" => Ok(AvailableFluids::R41),
+            "R410A" => Ok(AvailableFluids::R410A),
+            "R507A" => Ok(AvailableFluids::R507A),
+            "RC318" => Ok(AvailableFluids::RC318),
+            "SES36" => Ok(AvailableFluids::SES36),
+            "SulfurDioxide" => Ok(AvailableFluids::SulfurDioxide),
+            "SulfurHexafluoride" => Ok(AvailableFluids::SulfurHexafluoride),
+            "Tetrahydrofuran" => Ok(AvailableFluids::Tetrahydrofuran),
+            "Toluene" => Ok(AvailableFluids::Toluene),
+            "trans-2-Butene" => Ok(AvailableFluids::trans2Butene),
+            "VinylChloride" => Ok(AvailableFluids::VinylChloride),
+            "Water" => Ok(AvailableFluids::Water),
+            "Xenon" => Ok(AvailableFluids::Xenon),
             _ => Err("Invalid fluid name"),
         }
     }
@@ -322,6 +464,25 @@ mod tests {
         }
     }
 
+    #[test]
+    fn name_to_fluid_match() {
+        for fluid in AvailableFluids::iter() {
+            let name = fluid.get_name();
+            let found_fluid_result = AvailableFluids::name_to_fluid(&name);
+            assert!(
+                found_fluid_result.is_ok(),
+                "Error: {} not found in name_to_fluid()",
+                name
+            );
+            let found_fluid = found_fluid_result.unwrap();
+            assert_eq!(
+                fluid, found_fluid,
+                "Error: Fluid {:?} -> Name {:?} -> Fluid {:?} does not match",
+                fluid, name, found_fluid
+            );
+        }
+    }
+
     use std::collections::HashSet;
     #[test]
     fn check_for_duplicate_fluids() {
@@ -339,7 +500,7 @@ mod tests {
                 .collect();
 
             for duplicate in &duplicate_list {
-                println!("WARNING: Duplicate fluid found! --> {:?}", duplicate)
+                println!("WARNING: Duplicate fluid found! -=> {:?}", duplicate)
             }
 
             assert!(
