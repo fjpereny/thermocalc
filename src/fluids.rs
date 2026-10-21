@@ -1,3 +1,5 @@
+use std::default;
+
 use rfluids::prelude::*;
 use strum::EnumIter;
 
@@ -140,6 +142,12 @@ pub enum AvailableFluids {
     oXylene,
     pXylene,
     trans2Butene,
+}
+
+impl default::Default for AvailableFluids {
+    fn default() -> Self {
+        AvailableFluids::Air
+    }
 }
 
 impl std::fmt::Display for AvailableFluids {
