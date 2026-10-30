@@ -1,7 +1,9 @@
 use crate::fluids::{self, AvailableFluids};
 use crate::thermo::{ThermoState, ThermoStateView, fluid_state};
 use iced::widget::scrollable::{Direction, Scrollbar};
-use iced::widget::{Scrollable, Space, container, grid, pick_list, text, text_input};
+use iced::widget::{
+    Scrollable, Space, button, column, container, grid, pick_list, row, text, text_input,
+};
 use iced::{Element, Font, Length};
 use strum::IntoEnumIterator;
 
@@ -23,6 +25,7 @@ pub struct Ui {
 
 #[derive(Clone)]
 pub enum Message {
+    MenuClicked(&'static str),
     FluidSelected(AvailableFluids),
     InputPressureChanged(String),
     InputTemperatureChanged(String),
@@ -92,10 +95,28 @@ impl Ui {
                     }
                 }
             }
+            _ => {}
         }
     }
 
     pub fn view(&self) -> Element<'_, Message, iced::Theme> {
+        let menu_bar: iced::widget::Row<'_, Message, iced::Theme, iced::Renderer> = row![
+            button(text("File").size(14))
+                .style(button::text)
+                .on_press(Message::MenuClicked("File")),
+            button(text("Edit").size(14))
+                .style(button::text)
+                .on_press(Message::MenuClicked("Edit")),
+            button(text("View").size(14))
+                .style(button::text)
+                .on_press(Message::MenuClicked("View")),
+            button(text("Help").size(14))
+                .style(button::text)
+                .on_press(Message::MenuClicked("Help")),
+        ]
+        .spacing(15)
+        .padding(8);
+
         let mut layout_grid = grid::Grid::new()
             .columns(3)
             .spacing(5)
@@ -271,12 +292,23 @@ impl Ui {
                 .push(container(Space::new()).height(Length::Shrink));
         }
 
+        // --- PLACE THIS AT THE VERY END OF YOUR VIEW FUNCTION ---
         let grid_container = container(layout_grid);
         let scrollable_grid =
             Scrollable::with_direction(grid_container, Direction::Vertical(Scrollbar::default()));
 
-        container(scrollable_grid)
+        let main_content = container(scrollable_grid)
             .padding(20.0)
+            .width(Length::Fill)
+            .height(Length::Fill);
+
+        // Put the menu_bar and scrollable content together here
+        let root_layout: iced::widget::Column<'_, Message, iced::Theme, iced::Renderer> =
+            column![menu_bar, main_content,]
+                .width(Length::Fill)
+                .height(Length::Fill);
+
+        container(root_layout)
             .width(Length::Fill)
             .height(Length::Fill)
             .into()
