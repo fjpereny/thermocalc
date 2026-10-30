@@ -100,7 +100,7 @@ impl Ui {
     }
 
     pub fn view(&self) -> Element<'_, Message, iced::Theme> {
-        let menu_bar: iced::widget::Row<'_, Message, iced::Theme, iced::Renderer> = row![
+        let menu_items: iced::widget::Row<'_, Message, iced::Theme, iced::Renderer> = row![
             button(text("File").size(14))
                 .style(button::text)
                 .on_press(Message::MenuClicked("File")),
@@ -116,6 +116,21 @@ impl Ui {
         ]
         .spacing(15)
         .padding(8);
+
+        let menu_bar = container(menu_items)
+            .width(Length::Fill)
+            .style(|theme: &iced::Theme| {
+                let palette = theme.extended_palette();
+                container::Style {
+                    background: Some(palette.background.weak.color.into()),
+                    border: iced::Border {
+                        color: palette.background.strong.color,
+                        width: 1.0,
+                        radius: 0.0.into(),
+                    },
+                    ..Default::default()
+                }
+            });
 
         let mut layout_grid = grid::Grid::new()
             .columns(3)
@@ -285,14 +300,62 @@ impl Ui {
             ),
         ];
 
+        let mut row_alternate_background = true;
         for (label, value) in fields {
+            // Define the row's dynamic color matching strategy
+            let current_row_is_alt = row_alternate_background;
+            let row_style = move |theme: &iced::Theme| {
+                let palette = theme.extended_palette();
+                container::Style {
+                    background: Some(if current_row_is_alt {
+                        palette.background.weak.color.into() // Lighter color
+                    } else {
+                        palette.background.base.color.into() // Darker color
+                    }),
+                    ..Default::default()
+                }
+            };
+
             layout_grid = layout_grid
-                .push(text(*label))
-                .push(text(*value))
-                .push(container(Space::new()).height(Length::Shrink));
+                .push(
+                    container(text(*label))
+                        .style(row_style.clone())
+                        .padding(4)
+                        .width(Length::Fill),
+                )
+                .push(
+                    container(text(*value))
+                        .style(row_style.clone())
+                        .padding(4)
+                        .width(Length::Fill),
+                )
+                .push(
+                    container(Space::new())
+                        .style(row_style)
+                        .height(Length::Shrink)
+                        .width(Length::Fill),
+                );
+
+            row_alternate_background = !row_alternate_background;
+
+            layout_grid = layout_grid.push(text(*label)).push(text(*value)).push(
+                container(Space::new())
+                    .height(Length::Shrink)
+                    .style(|theme: &iced::Theme| {
+                        let palette = theme.extended_palette();
+                        container::Style {
+                            background: Some(palette.background.strongest.color.into()),
+                            border: iced::Border {
+                                color: palette.background.strong.color,
+                                width: 1.0,
+                                radius: 0.0.into(),
+                            },
+                            ..Default::default()
+                        }
+                    }),
+            );
         }
 
-        // --- PLACE THIS AT THE VERY END OF YOUR VIEW FUNCTION ---
         let grid_container = container(layout_grid);
         let scrollable_grid =
             Scrollable::with_direction(grid_container, Direction::Vertical(Scrollbar::default()));
