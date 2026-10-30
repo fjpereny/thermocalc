@@ -1,9 +1,8 @@
 use crate::fluids::{self, AvailableFluids};
 use crate::thermo::{ThermoState, ThermoStateView, fluid_state};
-use iced::Length::Fill;
 use iced::widget::scrollable::{Direction, Scrollbar};
 use iced::widget::{Scrollable, Space, container, grid, pick_list, text, text_input};
-use iced::{Color, Element, Font, Length};
+use iced::{Element, Font, Length};
 use strum::IntoEnumIterator;
 
 #[derive(Default)]
@@ -97,7 +96,10 @@ impl Ui {
     }
 
     pub fn view(&self) -> Element<'_, Message, iced::Theme> {
-        let mut layout_grid = grid::Grid::new().columns(3).spacing(5);
+        let mut layout_grid = grid::Grid::new()
+            .columns(3)
+            .spacing(5)
+            .height(Length::Shrink);
         let available_fluids: Vec<AvailableFluids> = AvailableFluids::iter().collect();
         let fluid_dropdown: iced::widget::PickList<
             '_,
@@ -113,52 +115,32 @@ impl Ui {
         );
 
         // Row 1
-        layout_grid = layout_grid.push(
-            container(
-                text("Fluid")
-                    .size(16)
-                    .color(Color::WHITE)
-                    .font(Font::DEFAULT),
-            )
-            .center_y(Length::Fill),
-        );
+        layout_grid = layout_grid
+            .push(container(text("Fluid").size(16).font(Font::DEFAULT)).height(Length::Shrink));
         layout_grid = layout_grid.push(
             container(fluid_dropdown)
                 .padding(5)
                 .max_width(100.0)
-                .center_y(Fill),
+                .height(Length::Shrink),
         );
-        layout_grid = layout_grid.push(container(Space::new()).center_y(Length::Fill));
+        layout_grid = layout_grid.push(container(Space::new()).center_y(Length::Shrink));
 
         // Row 2
-        layout_grid = layout_grid.push(
-            container(
-                text("Pressure")
-                    .size(16)
-                    .color(Color::WHITE)
-                    .font(Font::DEFAULT),
-            )
-            .center_y(Length::Fill),
-        );
+        layout_grid = layout_grid
+            .push(container(text("Pressure").size(16).font(Font::DEFAULT)).height(Length::Shrink));
         layout_grid = layout_grid.push(
             container(
                 text_input("Pressure", &self.input_pressure_text)
                     .on_input(Message::InputPressureChanged),
             )
             .max_width(100.0)
-            .center_y(Length::Fill),
+            .height(Length::Shrink),
         );
-        layout_grid = layout_grid.push(container(Space::new()).center_y(Length::Fill));
+        layout_grid = layout_grid.push(container(Space::new()).center_y(Length::Shrink));
 
         // Row 3
         layout_grid = layout_grid.push(
-            container(
-                text("Temperature")
-                    .size(16)
-                    .color(Color::WHITE)
-                    .font(Font::DEFAULT),
-            )
-            .center_y(Length::Fill),
+            container(text("Temperature").size(16).font(Font::DEFAULT)).height(Length::Shrink),
         );
         layout_grid = layout_grid.push(
             container(
@@ -166,9 +148,9 @@ impl Ui {
                     .on_input(Message::InputTemperatureChanged),
             )
             .max_width(100.0)
-            .center_y(Length::Fill),
+            .height(Length::Shrink),
         );
-        layout_grid = layout_grid.push(container(Space::new()).center_y(Length::Fill));
+        layout_grid = layout_grid.push(container(Space::new()).center_y(Length::Shrink));
 
         let view_data = &self.thermo_state_view;
         let fields: &[(&str, &str)] = &[
@@ -286,12 +268,17 @@ impl Ui {
             layout_grid = layout_grid
                 .push(text(*label))
                 .push(text(*value))
-                .push(container(Space::new()).center_y(Length::Fill));
+                .push(container(Space::new()).height(Length::Shrink));
         }
 
         let grid_container = container(layout_grid);
         let scrollable_grid =
             Scrollable::with_direction(grid_container, Direction::Vertical(Scrollbar::default()));
-        container(scrollable_grid).padding(20.0).into()
+
+        container(scrollable_grid)
+            .padding(20.0)
+            .width(Length::Fill)
+            .height(Length::Fill)
+            .into()
     }
 }
