@@ -9,7 +9,6 @@ use strum::IntoEnumIterator;
 
 #[derive(Default)]
 pub struct Ui {
-    units_state: UnitsState,
     thermo_state: ThermoState,
     thermo_state_view: ThermoStateView,
 
